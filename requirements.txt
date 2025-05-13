@@ -1,2 +1,4 @@
-flask
-youtube_transcript_api
+# requirements.txt
+Flask==3.1.1
+youtube-transcript-api==1.0.3
+gunicorn==21.2.0
