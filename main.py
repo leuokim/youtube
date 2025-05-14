@@ -7,29 +7,30 @@ app = Flask(__name__)
 
 def download_and_extract_transcript(video_id):
     url = f"https://www.youtube.com/watch?v={video_id}"
-    output_template = f"/tmp/{video_id}.%(ext)s"  # 파일 저장 경로 설정
+    output_template = f"/tmp/{video_id}.%(ext)s"  # 자막 저장 경로
 
     try:
-        # 1. 자막 다운로드 (자동 생성 한글 자막)
+        # yt-dlp 명령어 실행
         result = subprocess.run([
             "yt-dlp",
-            "--write-auto-sub",  # 자동 생성 자막 다운로드
-            "--sub-lang", "ko",  # 한글 자막만 다운로드
-            "--skip-download",  # 비디오는 다운로드하지 않음
-            "--output", output_template,  # 저장 경로
+            "--cookies", "cookies.txt",  # 쿠키 파일 사용
+            "--write-auto-sub",          # 자동 생성 자막 다운로드
+            "--sub-lang", "ko",          # 한글 자막만
+            "--skip-download",           # 영상은 다운로드하지 않음
+            "--output", output_template, # 저장 경로
             url
         ], check=True, capture_output=True, text=True)
 
-        # 실행된 명령어 출력
-        print("stdout:", result.stdout)  # 명령어 실행 로그
-        print("stderr:", result.stderr)  # 명령어 오류 로그
+        # 로그 출력 (디버깅용)
+        print("stdout:", result.stdout)
+        print("stderr:", result.stderr)
 
-        # 2. 자막 파일 경로
+        # 저장된 자막 파일 경로
         vtt_path = f"/tmp/{video_id}.ko.vtt"
         if not os.path.exists(vtt_path):
             return None, "해당 비디오에는 한국어 자막이 없습니다."
 
-        # 3. 자막 파일 읽고 텍스트 추출
+        # 자막 파일 읽기
         transcript_text = ""
         for caption in webvtt.read(vtt_path):
             transcript_text += caption.text + " "
