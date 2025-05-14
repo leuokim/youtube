@@ -1,0 +1,9 @@
+subprocess.run([
+    "yt-dlp",
+    "--write-auto-sub",
+    "--sub-lang", "ko",
+    "--cookies", "cookies.txt",   # 이 줄 추가!
+    "--skip-download",
+    "--output", output_template,
+    url
+], check=True)
