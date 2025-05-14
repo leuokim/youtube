@@ -10,14 +10,14 @@ def download_and_extract_transcript(video_id):
     output_template = f"/tmp/{video_id}.%(ext)s"  # 자막 저장 경로
 
     # 한글 → 영어 순서로 자막 시도
-    for lang in ["ko", "en"]:
+    for lang in ["ko", "en"]:  # 한국어 자막(ko) 또는 영어 자막(en)
         try:
             # yt-dlp 명령어 실행
             result = subprocess.run([
                 "yt-dlp",
                 "--cookies", "cookies.txt",  # 쿠키 파일 사용
                 "--write-auto-sub",          # 자동 생성 자막 다운로드
-                "--sub-lang", lang,          # 한글 자막(ko) 또는 영어 자막(en)
+                "--sub-lang", lang,          # 자막 언어 설정 (한국어, 영어)
                 "--skip-download",           # 영상은 다운로드하지 않음
                 "--output", output_template, # 저장 경로
                 url
